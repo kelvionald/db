@@ -100,35 +100,42 @@ FROM reader;
 
 -- 7. SELECT GROUP BY с функциями агрегации
 --     1. MIN
-SELECT MIN(birthday)
-FROM reader;
+SELECT MIN(birthday), firstname
+FROM reader
+GROUP BY firstname;
 --     2. MAX
-SELECT MAX(birthday)
-FROM reader;
+SELECT MAX(read_num), firstname
+FROM reader
+GROUP BY firstname;
 --     3. AVG
-SELECT AVG(reader_id)
-FROM reader;
+SELECT AVG(book_num)
+FROM author
+GROUP BY lastname;
 --     4. SUM
-SELECT SUM(reader_id)
-FROM reader;
+SELECT SUM(page_num), name
+FROM book
+GROUP BY name;
 --     5. COUNT
-SELECT COUNT(reader_id)
-FROM reader;
+SELECT COUNT(reader_id), firstname
+FROM reader
+GROUP BY firstname;
 
 -- 8. SELECT GROUP BY + HAVING
 --     1. Написать 3 разных запроса с использованием GROUP BY + HAVING
-SELECT COUNT(reader_id)
+SELECT firstname, COUNT(*)
 FROM reader
-GROUP BY reader_id
-HAVING reader_id > 5;
+GROUP BY firstname
+HAVING COUNT(*) > 1;
+
 SELECT reader_id, MIN(birthday)
 FROM reader
 GROUP BY reader_id
-HAVING reader_id > 1;
-SELECT reader_id, AVG(reader_id)
+HAVING MIN(birthday) > '1998.01.01';
+
+SELECT lastname, MAX(birthday), COUNT(*)
 FROM reader
-GROUP BY reader_id
-HAVING reader_id > 1;
+GROUP BY lastname
+HAVING MAX(birthday) > '1998.01.01';
 
 -- 9. SELECT JOIN
 --     1. LEFT JOIN двух таблиц и WHERE по одному из атрибутов
@@ -155,7 +162,9 @@ FROM reader
 --     1. Написать запрос с WHERE IN (подзапрос)
 SELECT *
 FROM reader
-WHERE reader_id IN (5, 6);
+WHERE reader_id IN (
+    SELECT reader_id FROM issuance
+    );
 --     2. Написать запрос SELECT atr1, atr2, (подзапрос) FROM ...
 SELECT reader_id,
        firstname,
