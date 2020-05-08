@@ -60,8 +60,7 @@ LEFT JOIN hotel ON hotel.id_hotel = room.id_hotel
 WHERE checkin_date <= DATEFROMPARTS(2019, 03, 23)
 	AND checkout_date >= DATEFROMPARTS(2019, 03, 23)
 	AND hotel.NAME = 'Космос'
-GROUP BY room_category.id_room_category
-	,room_category.NAME
+GROUP BY room_category.NAME
 
 -- 5. Дать список последних проживавших клиентов по всем комнатам гостиницы “Космос”, выехавшиx в апреле с указанием даты выезда.
 SELECT client.*
@@ -112,14 +111,9 @@ WHERE hotel.[name] = 'Космос'
 SELECT *
 FROM room_in_booking b1
 INNER JOIN room_in_booking AS b2 ON b1.id_room = b2.id_room
-WHERE (
-		b1.id_room_in_booking != b2.id_room_in_booking
-		AND (
-			b2.checkin_date <= b1.checkin_date AND b1.checkin_date < b2.checkout_date
-			OR 
-			b1.checkin_date <= b2.checkin_date AND b2.checkin_date < b1.checkout_date
-			)
-		)
+WHERE 
+	b1.id_room_in_booking != b2.id_room_in_booking
+	AND b1.checkin_date <= b2.checkin_date AND b2.checkin_date < b1.checkout_date
 ORDER BY b1.id_room_in_booking
 
 
@@ -128,10 +122,10 @@ ORDER BY b1.id_room_in_booking
 BEGIN TRANSACTION;
 
 INSERT INTO booking
-VALUES (
-	2
-	,DATEFROMPARTS(2022, 05, 1)
-	);
+VALUES (2,'2022-05-1');
+
+INSERT INTO room_in_booking 
+VALUES (10, 10, '2022-05-1', '2022-05-29');
 
 COMMIT;
 
@@ -139,22 +133,22 @@ COMMIT;
 -- 9. Добавить необходимые индексы для всех таблиц.
 
 -- booking
-CREATE NONCLUSTERED INDEX [booking_id] ON booking (id_booking)
+CREATE NONCLUSTERED INDEX [IX_booking_id] ON booking (id_booking)
 
 -- client
-CREATE NONCLUSTERED INDEX [client_id] ON client (id_client)
+CREATE NONCLUSTERED INDEX [IX_client_id] ON client (id_client)
 
 -- hotel
-CREATE NONCLUSTERED INDEX [hotel_id] ON hotel (id_hotel)
-CREATE NONCLUSTERED INDEX [hotel_name] ON hotel ([name])
+CREATE NONCLUSTERED INDEX [IX_hotel_id] ON hotel (id_hotel)
+CREATE NONCLUSTERED INDEX [IX_hotel_name] ON hotel ([name])
 
 -- room
-CREATE NONCLUSTERED INDEX [room_id] ON room (id_room)
+CREATE NONCLUSTERED INDEX [IX_room_id] ON room (id_room)
 
 -- room_category
-CREATE NONCLUSTERED INDEX [room_category_id ON room_category (id_room_category)
+CREATE NONCLUSTERED INDEX [IX_room_category_id ON room_category (id_room_category)
 
 -- room_in_booking
-CREATE NONCLUSTERED INDEX [room_in_booking_id] ON room_in_booking (id_booking)
+CREATE NONCLUSTERED INDEX [IX_room_in_booking_id] ON room_in_booking (id_booking)
 
-CREATE NONCLUSTERED INDEX [room_in_booking_dates] ON room_in_booking (checkin_date, checkout_date)
+CREATE NONCLUSTERED INDEX [IX_room_in_booking_dates] ON room_in_booking (checkin_date, checkout_date)
