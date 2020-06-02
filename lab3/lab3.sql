@@ -3,14 +3,19 @@
 -- 	INSERT INTO table_name VALUES (value1, value2, value3, ...);
 INSERT INTO reader
 VALUES (5, 'Manilov', 'Bob', 0, '2000-10-10');
+
 INSERT INTO reader
-VALUES (6, 'Manilov', 'Bob', 0, '2001-10-12');
+VALUES (6, 'Mani', 'Bob', 0, '2001-10-12');
+
 INSERT INTO book
 VALUES (1, '123-23..', 'Bible', 10, 2000);
+
 INSERT INTO copy
 VALUES (1, 1, 2, '2001-10-12');
+
 INSERT INTO issuance
 VALUES (1, 1, 5, '2001-10-12', null, '2002-10-12');
+
 INSERT INTO issuance
 VALUES (2, 1, 6, '2001-10-12', null, '2002-10-12');
 -- 	2. С указанием списка полей
@@ -124,18 +129,18 @@ GROUP BY firstname;
 --     1. Написать 3 разных запроса с использованием GROUP BY + HAVING
 SELECT firstname, COUNT(*)
 FROM reader
+GROUP BY reader.firstname
+HAVING COUNT(*) > 0;
+
+SELECT publication_year, page_num
+FROM book
+GROUP BY publication_year, page_num
+HAVING SUM(page_num) > 100;
+
+SELECT firstname
+FROM author
 GROUP BY firstname
-HAVING COUNT(*) > 1;
-
-SELECT reader_id, MIN(birthday)
-FROM reader
-GROUP BY reader_id
-HAVING MIN(birthday) > '1998.01.01';
-
-SELECT lastname, MAX(birthday), COUNT(*)
-FROM reader
-GROUP BY lastname
-HAVING MAX(birthday) > '1998.01.01';
+HAVING SUM(book_num) > 10;
 
 -- 9. SELECT JOIN
 --     1. LEFT JOIN двух таблиц и WHERE по одному из атрибутов
