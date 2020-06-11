@@ -132,10 +132,10 @@ FROM reader
 GROUP BY reader.firstname
 HAVING COUNT(*) > 0;
 
-SELECT publication_year, page_num
+SELECT publication_year, AVG(page_num)
 FROM book
-GROUP BY publication_year, page_num
-HAVING SUM(page_num) > 100;
+GROUP BY publication_year
+HAVING AVG(page_num) > 100;
 
 SELECT firstname
 FROM author
